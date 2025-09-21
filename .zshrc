@@ -5,7 +5,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+# Load Powerlevel10k theme
+if [[ -f ~/.config/powerlevel10k/powerlevel10k.zsh-theme ]]; then
+  source ~/.config/powerlevel10k/powerlevel10k.zsh-theme
+elif [[ -f ~/powerlevel10k/powerlevel10k.zsh-theme ]]; then
+  source ~/powerlevel10k/powerlevel10k.zsh-theme
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -26,8 +31,18 @@ setopt hist_verify
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Load zsh plugins
+if [[ -f ~/.config/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source ~/.config/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+if [[ -f ~/.config/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+  source ~/.config/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+elif [[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+  source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -44,7 +59,16 @@ fi
 # ---- FZF -----
 
 # Set up fzf key bindings and fuzzy completion
-eval "$(fzf --zsh)"
+if command -v fzf &> /dev/null; then
+  # Try new --zsh flag first, fallback to sourcing files
+  if fzf --zsh &>/dev/null; then
+    eval "$(fzf --zsh)"
+  else
+    # Fallback for older fzf versions
+    [[ -f /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
+    [[ -f /usr/share/fzf/completion.zsh ]] && source /usr/share/fzf/completion.zsh
+  fi
+fi
 
 # --- setup fzf theme ---
 fg="#CBE0F0"
@@ -74,7 +98,9 @@ _fzf_compgen_dir() {
   fd --type=d --hidden --exclude .git . "$1"
 }
 
-source ~/fzf-git.sh/fzf-git.sh
+if [[ -f ~/fzf-git.sh/fzf-git.sh ]]; then
+  source ~/fzf-git.sh/fzf-git.sh
+fi
 
 show_file_or_dir_preview="if [ -d {} ]; then eza --tree --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi"
 
@@ -106,20 +132,21 @@ alias ls="eza --icons=always"
 
 # ---- TheFuck -----
 
-# thefuck alias
-eval $(thefuck --alias)
-eval $(thefuck --alias fk)
+# thefuck alias (disabled due to Python 3.12 compatibility issues)
+# if command -v thefuck &> /dev/null; then
+#   eval $(thefuck --alias)
+#   eval $(thefuck --alias fk)
+# fi
 
 # ---- Zoxide (better cd) ----
-eval "$(zoxide init zsh)"
-
-alias cd="z"
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh)"
+  alias cd="z"
+fi
 
 alias python="python3"
 
-# Set up PATH with homebrew and common directories
-export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
-export PATH="$PATH:$HOME/Library/Python/3.12/bin"
+# Set up PATH for Linux
 
 # --- Yazi Setup ---
 export EDITOR="nvim"
@@ -132,3 +159,9 @@ function y() {
 	fi
 	rm -f -- "$tmp"
 }
+export PATH="$HOME/.local/bin:$PATH"
+
+# Deno environment
+if [ -f "$HOME/.deno/env" ]; then
+  . "$HOME/.deno/env"
+fi

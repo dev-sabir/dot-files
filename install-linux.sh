@@ -59,19 +59,43 @@ install_packages() {
 
             print_status "📦 Installing core development tools..."
 
-            # Core packages
+            # Core packages (excluding npm to avoid conflicts with NodeSource nodejs)
             sudo apt install -y \
                 neovim \
                 tmux \
                 zsh \
                 git \
                 curl \
-                nodejs \
-                npm \
                 build-essential \
                 software-properties-common \
                 wget \
-                unzip
+                unzip \
+                python3-pip \
+                pipx
+
+            # Install Node.js and npm properly
+            if ! command -v node &> /dev/null; then
+                print_status "Installing Node.js via NodeSource..."
+                curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+                sudo apt install -y nodejs
+            else
+                print_success "Node.js already installed: $(node --version)"
+            fi
+
+            # Install npm if not available
+            if ! command -v npm &> /dev/null; then
+                print_status "Installing npm..."
+                if command -v node &> /dev/null; then
+                    # If we have nodejs from NodeSource, npm should be included
+                    print_warning "npm not found but nodejs is installed. Reinstalling nodejs with npm..."
+                    sudo apt install --reinstall -y nodejs
+                else
+                    # Install npm separately if needed
+                    sudo apt install -y npm
+                fi
+            else
+                print_success "npm already installed: $(npm --version)"
+            fi
 
             # Enhanced tools - some need different names on Ubuntu
             print_status "🛠️ Installing enhanced CLI tools..."
@@ -109,7 +133,7 @@ install_packages() {
             # Install thefuck
             if ! command -v thefuck &> /dev/null; then
                 print_status "Installing thefuck..."
-                pip3 install --user thefuck
+                pipx install thefuck
             fi
 
             # Install yazi
@@ -159,7 +183,7 @@ install_packages() {
             # Install thefuck
             if ! command -v thefuck &> /dev/null; then
                 print_status "Installing thefuck..."
-                pip3 install --user thefuck
+                pipx install thefuck
             fi
             ;;
 
