@@ -3,6 +3,7 @@
 > A comprehensive, beginner-friendly dotfiles setup featuring Neovim, tmux, and enhanced terminal tools
 
 [![macOS](https://img.shields.io/badge/Platform-macOS-blue.svg)](https://www.apple.com/macos/)
+[![Linux](https://img.shields.io/badge/Platform-Linux-orange.svg)](https://www.linux.org/)
 [![Neovim](https://img.shields.io/badge/Neovim-0.11+-green.svg)](https://neovim.io/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -38,14 +39,22 @@
 
 **One command to rule them all:**
 
+### macOS
 ```bash
 git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
 ```
 
+### Linux
+```bash
+git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./install-linux.sh
+```
+
 **What happens next:**
-1. 📦 Installs all required tools via Homebrew
+1. 📦 Installs all required tools (Homebrew/apt/dnf/pacman)
 2. 🔗 Creates symlinks to your home directory
 3. 🎨 Sets up consistent theming
 4. 🚀 Ready to code in under 5 minutes!
@@ -57,10 +66,15 @@ cd ~/.dotfiles
 | Platform | Status | Notes |
 |----------|--------|-------|
 | **macOS** | ✅ Fully Supported | Optimized for Apple Silicon & Intel |
-| **Linux** | ⚠️ Manual Setup Required | Install script needs adaptation |
+| **Linux** | ✅ Fully Supported | Ubuntu, Debian, Fedora, RHEL, Arch, Manjaro |
 | **Windows** | ❌ Not Supported | Consider WSL2 with Linux setup |
 
-> **Note:** The automated install script is currently macOS-only. Linux users can manually follow the configuration files.
+### Linux Distributions Supported:
+- **Ubuntu/Debian** - Uses `apt` package manager
+- **Fedora/RHEL/CentOS** - Uses `dnf` package manager
+- **Arch/Manjaro** - Uses `pacman` package manager
+
+> **Note:** The install scripts automatically detect your distribution and use the appropriate package manager.
 
 ---
 
@@ -69,14 +83,20 @@ cd ~/.dotfiles
 <details>
 <summary><b>Prerequisites</b></summary>
 
-### Required
+### macOS Requirements
 - **macOS 10.15+** (Catalina or newer)
 - **Homebrew** (will be installed automatically if missing)
 - **Git** (usually pre-installed on macOS)
 
-### Recommended
-- **iTerm2** or **Wezterm** for best terminal experience
-- **MesloLGS NF Font** (installed automatically)
+### Linux Requirements
+- **Ubuntu 20.04+**, **Debian 11+**, **Fedora 35+**, **Arch Linux**, or **Manjaro**
+- **Git** (install with your package manager if missing)
+- **Curl** (install with your package manager if missing)
+- **Build tools** (will be installed automatically)
+
+### Recommended for All Platforms
+- **iTerm2**, **Wezterm**, or **Alacritty** for best terminal experience
+- **MesloLGS NF Font** (installed automatically by both scripts)
 
 </details>
 
@@ -90,8 +110,15 @@ cd ~/.dotfiles
 ```
 
 ### Step 2: Run the Install Script
+
+**For macOS:**
 ```bash
 ./install.sh
+```
+
+**For Linux:**
+```bash
+./install-linux.sh
 ```
 
 ### Step 3: Post-Installation Setup
@@ -116,6 +143,8 @@ nvim
 <summary><b>Manual Installation</b></summary>
 
 ### Core Tools
+
+**macOS (Homebrew):**
 ```bash
 # Install Homebrew (if not installed)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -125,6 +154,23 @@ brew install neovim tmux zsh git curl node ripgrep fd fzf bat eza zoxide thefuck
 
 # Install Nerd Font
 brew install --cask font-meslo-lg-nerd-font
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+# Update package lists
+sudo apt update
+
+# Install core packages
+sudo apt install -y neovim tmux zsh git curl nodejs npm build-essential ripgrep fd-find fzf bat zoxide
+
+# Install eza (better ls)
+wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+sudo apt update && sudo apt install -y eza
+
+# Install Deno for markdown preview
+curl -fsSL https://deno.land/install.sh | sh
 ```
 
 ### Configuration Files
