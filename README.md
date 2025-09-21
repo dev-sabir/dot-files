@@ -189,6 +189,261 @@ ln -sf ~/.dotfiles/.wezterm.lua ~/.wezterm.lua
 
 ---
 
+## 🎨 Powerlevel10k Configuration Guide
+
+<details>
+<summary><b>Understanding Powerlevel10k</b></summary>
+
+Powerlevel10k is a fast, flexible, and feature-rich ZSH theme that provides:
+- **Git status indicators**
+- **Directory context**
+- **Command execution time**
+- **System resource info**
+- **Language version indicators** (Node, Python, etc.)
+
+</details>
+
+<details>
+<summary><b>Interactive Configuration Wizard</b></summary>
+
+After installation, run the configuration wizard:
+
+```bash
+p10k configure
+```
+
+### What the Wizard Shows You:
+
+1. **Diamond Icon Test** - Checks if your terminal displays symbols correctly
+2. **Font Style** - Choose between different icon sets
+3. **Prompt Style** - Select from multiple layouts:
+   - **Lean** - Minimal, single line
+   - **Classic** - Traditional two-line prompt
+   - **Rainbow** - Colorful segments
+   - **Pure** - Clean, minimalist design
+
+4. **Prompt Flow** - One line vs two lines
+5. **Connection** - How prompt segments connect
+6. **Prompt Heads** - Sharp vs rounded segment edges
+7. **Prompt Tails** - Flat vs slanted segment ends
+8. **Prompt Height** - Compact vs spacious
+9. **Spacing** - Sparse vs dense information
+10. **Icons** - Many vs few status indicators
+
+### Recommended Settings for Beginners:
+
+```
+✅ Diamond icon: y (yes)
+✅ Font style: (2) Meslo Nerd Font patched
+✅ Prompt style: (2) Classic
+✅ Prompt flow: (2) Two lines
+✅ Connection: (1) Disconnected
+✅ Prompt heads: (1) Sharp
+✅ Prompt tails: (1) Flat
+✅ Prompt height: (2) Two lines
+✅ Spacing: (2) Sparse
+✅ Icons: (2) Many icons
+✅ Instant prompt: y (yes)
+```
+
+### What Each Choice Affects:
+
+| Setting | Impact |
+|---------|--------|
+| **Classic Style** | Shows git status, directory, time clearly |
+| **Two Lines** | More space, cleaner layout |
+| **Disconnected** | Easier to read segments |
+| **Many Icons** | Rich visual indicators for git, languages |
+| **Instant Prompt** | Faster shell startup |
+
+</details>
+
+<details>
+<summary><b>Reconfiguring Anytime</b></summary>
+
+You can always reconfigure your prompt:
+
+```bash
+# Full reconfiguration wizard
+p10k configure
+
+# Quick style changes without wizard
+p10k reload
+
+# Edit configuration file directly
+nvim ~/.p10k.zsh
+```
+
+### Quick Theme Switching:
+```bash
+# Temporarily switch themes
+echo 'source ~/.config/powerlevel10k/powerlevel10k.zsh-theme' >> ~/.zshrc
+
+# Make permanent by editing .zshrc
+nvim ~/.zshrc
+```
+
+</details>
+
+<details>
+<summary><b>Customizing Your Prompt Elements</b></summary>
+
+Edit `~/.p10k.zsh` to customize what appears in your prompt:
+
+### Popular Elements to Enable/Disable:
+```bash
+# Edit these sections in ~/.p10k.zsh
+typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+    os_icon                 # OS logo
+    dir                     # Current directory
+    vcs                     # Git status
+    newline                 # Line break
+    prompt_char             # $ or ❯ symbol
+)
+
+typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
+    status                  # Exit code of last command
+    command_execution_time  # How long command took
+    background_jobs         # Running background jobs
+    direnv                  # Environment loading
+    asdf                    # Language versions
+    virtualenv             # Python virtual env
+    anaconda               # Conda environment
+    pyenv                  # Python version
+    goenv                  # Go version
+    nodenv                 # Node version
+    nvm                    # Node version manager
+    nodeenv               # Node environment
+    node_version          # Node.js version
+    go_version            # Go version
+    rust_version          # Rust version
+    dotnet_version        # .NET version
+    php_version           # PHP version
+    laravel_version       # Laravel version
+    java_version          # Java version
+    package              # Package version (package.json)
+    rbenv                # Ruby version
+    rvm                  # Ruby version manager
+    fvm                  # Flutter version
+    luaenv               # Lua version
+    jenv                 # Java version manager
+    plenv                # Perl version
+    phpenv               # PHP version manager
+    scalaenv             # Scala version
+    haskell_stack        # Haskell stack
+    kubecontext          # Kubernetes context
+    terraform            # Terraform workspace
+    aws                  # AWS profile
+    aws_eb_env           # AWS Elastic Beanstalk
+    azure                # Azure account
+    gcloud               # Google Cloud
+    google_app_cred      # Google application credentials
+    context              # User@hostname
+    nordvpn              # NordVPN status
+    ranger               # Ranger file manager
+    nnn                  # nnn file manager
+    vim_shell            # Vim shell indicator
+    midnight_commander   # Midnight Commander
+    nix_shell            # Nix shell
+    vi_mode              # Vi mode indicator
+    vpn_ip               # VPN IP address
+    load                 # System load
+    disk_usage           # Disk usage
+    ram                  # RAM usage
+    swap                 # Swap usage
+    todo                 # Todo.txt
+    timewarrior          # Timewarrior
+    taskwarrior          # Taskwarrior
+    time                 # Current time
+    ip                   # IP address
+    public_ip            # Public IP address
+    proxy                # Proxy indicator
+    battery              # Battery percentage
+    wifi                 # WiFi network
+    vpn_ip               # VPN status
+)
+```
+
+### Minimal Setup Example:
+```bash
+# For a clean, minimal prompt
+typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+    dir
+    vcs
+    newline
+    prompt_char
+)
+
+typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
+    status
+    command_execution_time
+    node_version
+    python_version
+    go_version
+)
+```
+
+</details>
+
+<details>
+<summary><b>Troubleshooting Common Issues</b></summary>
+
+### Icons Not Displaying Correctly
+```bash
+# Check if Nerd Font is installed
+fc-list | grep -i "meslo"
+
+# If missing, reinstall font
+brew install --cask font-meslo-lg-nerd-font  # macOS
+# Or follow Linux font installation steps
+
+# Set terminal font to "MesloLGS NF"
+```
+
+### Prompt Not Loading
+```bash
+# Check if powerlevel10k is sourced in .zshrc
+grep -n "powerlevel10k" ~/.zshrc
+
+# Manually source if missing
+echo 'source ~/.config/powerlevel10k/powerlevel10k.zsh-theme' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### Slow Prompt Performance
+```bash
+# Enable instant prompt (if not already)
+echo 'POWERLEVEL9K_INSTANT_PROMPT=quiet' >> ~/.zshrc
+
+# Disable heavy elements in ~/.p10k.zsh
+# Comment out: ram, load, disk_usage for better performance
+```
+
+### Git Status Not Showing
+```bash
+# Ensure git is in PATH
+which git
+
+# Check if in git repository
+git status
+
+# Re-run configuration
+p10k configure
+```
+
+### Configuration File Missing
+```bash
+# Regenerate configuration
+p10k configure
+
+# Or copy from backup
+cp ~/.p10k.zsh.backup ~/.p10k.zsh  # if backup exists
+```
+
+</details>
+
+---
+
 ## 🎯 Vim Basics for Beginners
 
 <details>
